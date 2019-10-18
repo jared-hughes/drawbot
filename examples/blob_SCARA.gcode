@@ -1,6 +1,8 @@
+; Translated for use with the SCARAdraw Machine
+; File Quality: 2 mm
 G17 (circles about xy plane)
 G90 (absolute)
-G0 Z10
+G0 Z10.000000
 M3 (default spindle to clockwise)
 G4 P2000.000000 (dwell 2000ms)
 G01 Z0 F10.00
@@ -41,6 +43,6 @@ G02 X9.9930 Y88.9153 I-201.1129 J-44.3564
 G02 X10.0415 Y88.6762 I-414.6653 J-84.1235
 G01 X10.0415 Y88.6755
 G01 X10.0415 Y88.6755
-G0 Z10
+G0 Z10.000000
 M5 (stop moving)
 M2 (end program)

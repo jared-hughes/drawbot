@@ -14,3 +14,6 @@ Check gcode
 /\n\s+/\n/
 ```
 then copy-paste to Desmos :P
+
+## gcode-translator
+https://gist.githubusercontent.com/xyzaxyz/a42bde12124317a33b2d5e02911eda50/
