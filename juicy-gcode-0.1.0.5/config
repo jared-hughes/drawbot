@@ -1,7 +1,7 @@
 gcode
 {
-   begin = "G17 (circles about xy plane);G90 (absolute);G0 Z10;M3 (default spindle to clockwise);G4 P2000.000000 (dwell 2000ms)"
-   end = "G0 Z10;M5 (stop moving);M2 (end program)"
-   toolon =  "G00 Z10"
-   tooloff = "G01 Z0 F10.00"
+   begin = "G17 (circles about xy plane);G90 (absolute);G1 F10 (set feedrate)"
+   end = "M5 (stop moving);M2 (end program)"
+   toolon =  ""
+   tooloff = ""
 }

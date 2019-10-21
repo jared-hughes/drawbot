@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import argparse
+import subprocess
+import re
+
+parser = argparse.ArgumentParser()
+parser.add_argument('input', help='input file (.svg)')
+parser.add_argument('output', nargs='?', help='Output File (.gcode)')
+parser.add_argument('-d', '--dim', help='Include draw boundaries',
+    action='store_true')
+args = parser.parse_args()
+
+def change_ending(filename, repl):
+    return re.sub("\.[^.]*$", repl, filename)
+
+JUICY = "juicy-gcode-0.1.0.5"
+p = subprocess.run([f"{JUICY}/juicy-gcode", args.input,
+    "-f", f"{JUICY}/config"], stdout=subprocess.PIPE)
+
+output = args.output
+if output is None:
+    output = change_ending(args.input, ".gcode")
+    print(output);
+with open(output, "wb") as f:
+    f.write(p.stdout);
+
+X_MIN = 20
+R_MIN = 100
+R_MAX = 157.08 + 183.45
+
+s_bounds = f"""\nG01 X{X_MIN} Y-{R_MIN}
+G03 X{X_MIN} Y{R_MIN} R{R_MIN}
+G02 X{X_MIN} Y{R_MAX} R999999
+G02 X{X_MIN} Y-{R_MAX} R{R_MAX}
+G02 X{X_MIN} Y-{R_MIN} R999999""".encode()
+
+output_dim = change_ending(output, "_bound.gcode")
+with open(output_dim, "wb") as f:
+    f.write(p.stdout + s_bounds)
+
+
+# if args.preview_file:
+#     subprocess.call(f"cp ")
+
+
