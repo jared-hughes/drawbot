@@ -15,8 +15,17 @@ def change_ending(filename, repl):
     return re.sub("\.[^.]*$", repl, filename)
 
 JUICY = "juicy-gcode-0.1.0.5"
-p = subprocess.run([f"{JUICY}/juicy-gcode", args.input,
-    "-f", f"{JUICY}/config"], stdout=subprocess.PIPE)
+with open(args.input) as f:
+    svg = f.read()
+    # remove all objects with opacity 0.99*
+    clean_svg = re.sub(r"<[^>]*opacity:0.99[^>]*>\s*", "", svg, flags=re.MULTILINE | re.DOTALL)
+
+temp_filename = change_ending(args.input, ".gcode.tmp")
+with open(temp_filename, "w+") as f:
+    f.write(clean_svg)
+
+p = subprocess.run([f"{JUICY}/juicy-gcode", temp_filename,
+    "-f", f"{JUICY}/config", "-d", "1"], stdout=subprocess.PIPE)
 
 output = args.output
 if output is None:
@@ -24,23 +33,4 @@ if output is None:
     print(output);
 with open(output, "wb") as f:
     f.write(p.stdout);
-
-X_MIN = 20
-R_MIN = 100
-R_MAX = 157.08 + 183.45
-
-s_bounds = f"""\nG01 X{X_MIN} Y-{R_MIN}
-G03 X{X_MIN} Y{R_MIN} R{R_MIN}
-G02 X{X_MIN} Y{R_MAX} R999999
-G02 X{X_MIN} Y-{R_MAX} R{R_MAX}
-G02 X{X_MIN} Y-{R_MIN} R999999""".encode()
-
-output_dim = change_ending(output, "_bound.gcode")
-with open(output_dim, "wb") as f:
-    f.write(p.stdout + s_bounds)
-
-
-# if args.preview_file:
-#     subprocess.call(f"cp ")
-
 
