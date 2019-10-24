@@ -1,0 +1,15 @@
+G17 (circles about xy plane)
+G90 (absolute)
+G1 F100 (set feedrate)
+M3 S0
+G00 X130.7872 Y-79.7910
+M3 S1
+G01 X279.7869 Y-79.7910
+G01 X279.7869 Y69.2087
+G01 X130.7872 Y69.2087
+G01 X130.7872 Y-79.7910
+M3 S0
+G90
+G1 X70 Y0
+M5 (stop moving)
+M2 (end program)

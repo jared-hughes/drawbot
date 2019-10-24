@@ -1,7 +1,7 @@
 gcode
 {
    begin = "G17 (circles about xy plane);G90 (absolute);G1 F100 (set feedrate)"
-   end = "M5 (stop moving);M2 (end program)"
-   toolon =  ""
-   tooloff = ""
+   end = "M3 S0;G90;G1 X70 Y0;M5 (stop moving);M2 (end program)"
+   toolon =  "M3 S1"
+   tooloff = "M3 S0"
 }
