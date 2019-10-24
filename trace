@@ -3,6 +3,7 @@
 import argparse
 import subprocess
 import re
+import os
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input', help='input file (.svg)')
@@ -15,21 +16,34 @@ def change_ending(filename, repl):
     return re.sub("\.[^.]*$", repl, filename)
 
 JUICY = "juicy-gcode-0.1.0.5"
-with open(args.input) as f:
-    svg = f.read()
-    # remove all objects with opacity 0.99*
+source_file = args.input;
+
+def cleanify_svg(filename):
+    with open(filename) as f:
+        svg = f.read()
+        # remove all objects with opacity 0.99*
     clean_svg = re.sub(r"<[^>]*opacity:0.99[^>]*>\s*", "", svg, flags=re.MULTILINE | re.DOTALL)
+    return clean_svg
+    
+try:
+    clean_svg = cleanify_svg(source_file)
+except:
+    source_file += ".svg"
+    # if this doesn't work, cry
+    clean_svg = cleanify_svg(source_file)
 
-temp_filename = change_ending(args.input, ".gcode.tmp")
-with open(temp_filename, "w+") as f:
-    f.write(clean_svg)
-
-p = subprocess.run([f"{JUICY}/juicy-gcode", temp_filename,
-    "-f", f"{JUICY}/config", "-d", "1"], stdout=subprocess.PIPE)
+temp_filename = change_ending(source_file, ".gcode.tmp")
+try:
+    with open(temp_filename, "w+") as f:
+        f.write(clean_svg)
+    p = subprocess.run([f"{JUICY}/juicy-gcode", temp_filename,
+        "-f", f"{JUICY}/config", "-d", "1"], stdout=subprocess.PIPE)
+finally:
+    os.remove(temp_filename)
 
 output = args.output
 if output is None:
-    output = change_ending(args.input, ".gcode")
+    output = change_ending(source_file, ".gcode")
     print(output);
 with open(output, "wb") as f:
     f.write(p.stdout);
