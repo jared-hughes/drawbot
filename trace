@@ -14,6 +14,8 @@ parser.add_argument('-d', '--dim', help='Include draw boundaries',
 args = parser.parse_args()
 
 def change_ending(filename, repl):
+    if "." not in filename:
+        filename += repl
     return re.sub("\.[^.]*$", repl, filename)
 
 JUICY = expanduser("~/drawbot/drawbot/juicy-gcode-0.1.0.5")
@@ -29,7 +31,7 @@ def cleanify_svg(filename):
 try:
     clean_svg = cleanify_svg(source_file)
 except:
-    source_file += ".svg"
+    source_file = change_ending(source_file, ".svg")
     # if this doesn't work, cry
     clean_svg = cleanify_svg(source_file)
 
@@ -46,6 +48,28 @@ output = args.output
 if output is None:
     output = change_ending(source_file, ".gcode")
     print(output);
-with open(output, "wb") as f:
-    f.write(p.stdout);
+gcode = p.stdout.decode("UTF-8")
+
+with open(output, "w+") as outfile:
+    for line in gcode.split("\n"):
+        if "NaN" in line:
+            continue
+        # flip Y
+        if line == "":
+            continue
+        parts = line.split(" ")
+        if parts[0] == "G02":
+            line = "G03"
+        elif parts[0] == "G03":
+            line = "G02"
+        else:
+            line = parts[0]
+        for part in parts[1:]:
+            add = ""
+            if part[0] in "YJ":
+                add = part[0] + str(-float(part[1:]))
+            else:
+                add = part
+            line += " " + add
+        outfile.write(line + "\n")
 
