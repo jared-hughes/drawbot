@@ -4,6 +4,7 @@ import argparse
 import subprocess
 import re
 import os
+from os.path import expanduser
 
 parser = argparse.ArgumentParser()
 parser.add_argument('input', help='input file (.svg)')
@@ -15,7 +16,7 @@ args = parser.parse_args()
 def change_ending(filename, repl):
     return re.sub("\.[^.]*$", repl, filename)
 
-JUICY = "juicy-gcode-0.1.0.5"
+JUICY = expanduser("~/drawbot/drawbot/juicy-gcode-0.1.0.5")
 source_file = args.input;
 
 def cleanify_svg(filename):
