@@ -11,6 +11,8 @@ parser.add_argument('input', help='input file (.svg)')
 parser.add_argument('output', nargs='?', help='Output File (.gcode)')
 parser.add_argument('-d', '--dim', help='Include draw boundaries',
     action='store_true')
+# default True
+parser.add_argument('--flip', help='Flip the output y-axis', action='store_false')
 args = parser.parse_args()
 
 def change_ending(filename, repl):
@@ -57,19 +59,20 @@ with open(output, "w+") as outfile:
         # flip Y
         if line == "":
             continue
-        parts = line.split(" ")
-        if parts[0] == "G02":
-            line = "G03"
-        elif parts[0] == "G03":
-            line = "G02"
-        else:
-            line = parts[0]
-        for part in parts[1:]:
-            add = ""
-            if part[0] in "YJ":
-                add = part[0] + str(-float(part[1:]))
+        if args.flip:
+            parts = line.split(" ")
+            if parts[0] == "G02":
+                line = "G03"
+            elif parts[0] == "G03":
+                line = "G02"
             else:
-                add = part
-            line += " " + add
+                line = parts[0]
+            for part in parts[1:]:
+                add = ""
+                if part[0] in "YJ":
+                    add = part[0] + str(-float(part[1:]))
+                else:
+                    add = part
+                line += " " + add
         outfile.write(line + "\n")
 
