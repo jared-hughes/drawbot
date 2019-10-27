@@ -1,6 +1,0 @@
-Machine Name: Steve O'Neil
-L1 (mm, measured on printed part): 138
-L2 (mm, measured on printed part): 160
-Inner Radius limit (mm, usually 90 for left handed): 0
-Handed (R/L): L
-Quality (Interpolation length, mm): 2
