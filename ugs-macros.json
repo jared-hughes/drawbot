@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Up",
+    "gcode": "M3 S0"
+  },
+  {
+    "name": "Down",
+    "gcode": "M3 S1"
+  },
+  {
+    "name": "Most down",
+    "gcode": "M3 S0.7"
+  },
+  {
+    "name": "Zero/Home",
+    "gcode": "$H"
+  },
+  {
+    "name": "Return to Zero",
+    "gcode": "G1 X326 Y0"
+  }
+]
